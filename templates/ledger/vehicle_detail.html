@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}{{ car.name }} — AutoLedger BD{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">MY GARAGE · গাড়ির বিস্তারিত</div><h1>{{ car.name }}</h1><p>{{ car.plate }}</p></div><div class="heading-actions"><a href="{% url 'vehicles' %}" class="btn btn-soft">← {{ t.my_cars }}</a><a href="{% url 'vehicle_edit' car.id %}" class="btn btn-primary">✎ {{ t.edit }}</a></div></div>
+<div class="vehicle-detail-shell">
+  <section class="panel vehicle-detail-hero">
+    <div class="hero-photo">{% if car.photo %}<img src="{{ car.photo.url }}" alt="{{ car.name }}">{% else %}<img src="{% static 'img/demo-car.jpg' %}" alt="Car photo example">{% endif %}</div>
+    <h2>{{ car.name }}</h2><p>{{ car.model_year }} · {{ car.get_fuel_type_display }} · {{ car.plate }}</p>
+    <div class="detail-key-metrics"><div><small>{{ t.odometer }}</small><strong>{{ car.odometer }} km</strong></div><div><small>{{ t.this_month }}</small><strong>৳ {{ month_total|floatformat:0 }}</strong></div><div><small>{{ t.total_cost }}</small><strong>৳ {{ car_total|floatformat:0 }}</strong></div></div>
+    <div class="action-bar"><a href="{% url 'expense_add' %}?category=FUEL" class="btn btn-primary">＋ {{ t.add_fuel }}</a><a href="{% url 'expense_add' %}?category=MAINTENANCE" class="btn btn-secondary">＋ {{ t.maintenance }}</a><a href="{% url 'reminder_add' %}" class="btn btn-soft">＋ {{ t.add_reminder }}</a></div>
+  </section>
+  <section class="panel vehicle-detail-activity"><div class="panel-head"><h3>{{ t.recent_activity }}</h3><a href="{% url 'expenses' %}?vehicle={{ car.pk }}" class="view-all">{{ t.view_all }} ↗</a></div>
+    <div class="transaction-list">{% for item in activity %}<a class="transaction" href="{% url 'expense_edit' item.pk %}"><div class="transaction-symbol symbol-other">{% if item.category == 'FUEL' %}⛽{% elif item.category == 'MAINTENANCE' %}⚒{% else %}▤{% endif %}</div><div class="transaction-label"><b>{{ item.description }}</b><small>{{ item.date|date:'d M Y' }} · {{ item.location }}</small></div><div class="transaction-cost"><b>৳ {{ item.amount|floatformat:0 }}</b></div></a>{% empty %}<div class="empty-simple">{{ t.no_records }}</div>{% endfor %}</div>
+    <div class="panel-head" style="margin-top:25px"><h3>{{ t.reminders }}</h3><a href="{% url 'reminders' %}" class="view-all">{{ t.view_all }} ↗</a></div>
+    <div class="reminder-list">{% for item in car_reminders %}<a class="reminder-row" href="{% url 'reminder_edit' item.pk %}"><span class="reminder-bubble">♧</span><div><b>{{ item.title }}</b><small>{% if item.due_date %}{{ item.due_date }}{% endif %} {% if item.due_odometer %}{{ item.due_odometer }} km{% endif %}</small></div><span class="status-tag">Upcoming</span></a>{% empty %}<div class="empty-simple">{{ t.no_records }}</div>{% endfor %}</div>
+  </section>
+</div>
+{% endblock %}

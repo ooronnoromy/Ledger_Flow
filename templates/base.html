@@ -1,0 +1,92 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ app_lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#007b53">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="AutoLedger BD — বাংলাদেশের গাড়ির সকল খরচ ও রক্ষণাবেক্ষণের হিসাব। Designed by ARONNO.">
+  <link rel="manifest" href="{% url 'manifest' %}">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}?v=emblem1">
+  <link rel="apple-touch-icon" href="{% static 'img/icon-192.png' %}?v=emblem1">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/reference.css' %}">
+  <link rel="stylesheet" href="{% static 'css/showcase.css' %}">
+  <link rel="stylesheet" href="{% static 'css/account.css' %}">
+  <title>{% block title %}AutoLedger BD{% endblock %}</title>
+</head>
+<body data-session-timeout="{{ session_idle_timeout }}" data-session-activity="{% url 'session_activity' %}" data-session-login="{% url 'login' %}" data-session-logout="{% url 'logout' %}">
+<div class="app-shell reference-app">
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <a class="brand" href="{% url 'dashboard' %}"><img src="{% static 'img/logo.svg' %}?v=emblem1" alt="AutoLedger BD logo"><span><b>AutoLedger <em>BD</em></b><small>Track Today. Drive Tomorrow.</small></span></a>
+    <nav class="side-nav">
+      {% if is_driver %}
+      <a class="nav-link {% if section == 'dashboard' %}selected{% endif %}" href="{% url 'dashboard' %}"><span class="nav-icon">⌂</span>{% if app_lang == 'bn' %}আমার ড্যাশবোর্ড{% else %}My dashboard{% endif %}</a>
+      <a class="nav-link {% if section == 'expenses' %}selected{% endif %}" href="{% url 'expense_add' %}"><span class="nav-icon">＋</span>{{ t.add_expense }}</a>
+      <a class="nav-link {% if section == 'settings' %}selected{% endif %}" href="{% url 'settings' %}"><span class="nav-icon">◎</span>{{ t.profile }}</a>
+      {% else %}
+      <a class="nav-link {% if section == 'dashboard' %}selected{% endif %}" href="{% url 'dashboard' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></span>{{ t.dashboard }}</a>
+      <a class="nav-link {% if section == 'vehicles' %}selected{% endif %}" href="{% url 'vehicles' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7 2-4h10l2 4 2 3v8H3v-8Zm-2 4h18M7 14h1m8 0h1M5 18v3m14-3v3"/></svg></span>{{ t.my_cars }}</a>
+      <a class="nav-link {% if section == 'fuel' %}selected{% endif %}" href="{% url 'expenses' %}?category=FUEL"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4h10v17M2 21h14M7 7h4v5H7Zm7 6h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-4-4m2 2-2 3 4 2"/></svg></span>{{ t.fuel_records }}</a>
+      <a class="nav-link {% if section == 'maintenance' %}selected{% endif %}" href="{% url 'expenses' %}?category=MAINTENANCE"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6a6 6 0 0 0-7 7l-5 5a3 3 0 0 0 4 4l5-5a6 6 0 0 0 7-8l-4 4-4-4 4-4Z"/></svg></span>{{ t.maintenance }}</a>
+      <a class="nav-link {% if section == 'trips' %}selected{% endif %}" href="{% url 'expenses' %}?category=TRIP"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7 2-4h10l2 4 2 3v8H3v-8Zm-2 4h18M7 14h1m8 0h1M5 18v3m14-3v3"/></svg></span>{{ t.trip_cost }}</a>
+      <a class="nav-link {% if section == 'expenses' %}selected{% endif %}" href="{% url 'expenses' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h9l5 5v13H5Zm9 0v6h5M8 13h8m-8 4h6"/></svg></span>{{ t.expenses }}</a>
+      <a class="nav-link {% if section == 'receipts' %}selected{% endif %}" href="{% url 'receipts' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h9l5 5v13H5Zm9 0v6h5M8 13h8m-8 4h6"/></svg></span>{{ t.documents }}</a>
+      <a class="nav-link {% if section == 'reports' %}selected{% endif %}" href="{% url 'reports' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v18h17M8 16v-5m5 5V6m5 10v-7"/></svg></span>{{ t.reports }}</a>
+      <a class="nav-link {% if section == 'reminders' %}selected{% endif %}" href="{% url 'reminders' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 21h4M12 1v2"/></svg></span>{{ t.reminders }}</a>
+      <a class="nav-link {% if section == 'drivers' %}selected{% endif %}" href="{% url 'drivers' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M3 21v-3a7 7 0 0 1 14 0v3Zm13-17a3 3 0 0 1 0 6m3 4a6 6 0 0 1 3 7"/></svg></span>{{ t.drivers }}</a>
+      <a class="nav-link {% if section == 'settings' %}selected{% endif %}" href="{% url 'settings' %}"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 2-1 3-3 1v4l-2 2 2 2v4l3 1 1 3h6l1-3 3-1v-4l2-2-2-2V6l-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/></svg></span>{{ t.settings }}</a>
+      {% endif %}
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="bd-banner bd-banner-reference"><img class="reference-banner-art" src="{% static 'img/sidebar-banner-reference.png' %}" alt="National Martyrs’ Memorial, Bangladesh. Keep Your Car In Good Hands For a Better Bangladesh." width="949" height="1032"></div>
+      <a class="side-install" href="{% url 'downloads' %}"><span>↓</span> {{ t.download_app }}</a>
+      <div class="signature-sidebar">A product by <strong>ARONNO</strong> <span>✦</span></div>
+    </div>
+  </aside>
+  <div class="main-container">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-button hamburger" aria-label="Open navigation menu" id="menu-toggle" type="button">☰</button>
+        <a class="mobile-brand" href="{% url 'dashboard' %}"><img src="{% static 'img/logo.svg' %}?v=emblem1" alt=""><span>AutoLedger <b>BD</b></span></a>
+{% if not is_driver %}        <form class="global-search" action="{% url 'expenses' %}" method="get"><span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span><input aria-label="Search expenses" type="search" name="q" placeholder="{{ t.search }}"></form>{% endif %}
+      </div>
+      <div class="top-actions">
+        <span class="header-date">▦ &nbsp; {{ today|date:'d M Y' }}</span>
+        <span class="location-chip">🇧🇩 &nbsp; Dhaka, Bangladesh</span>
+        <div class="language-switch"><a href="{% url 'set_language' 'bn' %}" {% if app_lang == 'bn' %}class="chosen" aria-current="true"{% endif %}>বাংলা</a><i></i><a href="{% url 'set_language' 'en' %}" {% if app_lang == 'en' %}class="chosen" aria-current="true"{% endif %}>EN</a></div>
+{% if not is_driver %}        <a class="notification-icon" aria-label="Expense notifications: {{ notification_unread }} unread" href="{% url 'notifications' %}"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 21h4M12 1v2"/></svg>{% if notification_unread %}<span class="notification-badge">{{ notification_unread|default:0 }}</span>{% endif %}</a>{% endif %}
+        {% include 'includes/account_menu.html' %}
+      </div>
+    </header>
+    <main class="page-content">
+      {% if section == 'dashboard' and not is_driver %}<div class="mobile-greeting"><span class="avatar">{{ request.user.username|slice:':1'|upper }}</span><div><b>{% if app_lang == 'bn' %}শুভ সকাল!{% else %}Welcome back!{% endif %}</b><small>{{ request.user.first_name|default:request.user.username }}</small></div></div>{% endif %}
+      {% if messages %}<div class="flash-container">{% for message in messages %}<div class="flash flash-{{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% block content %}{% endblock %}
+      <footer class="footer"><span>© 2026 AutoLedger BD · 🇧🇩 Made for Bangladesh</span><span class="signature">{{ t.powered }} <strong>ARONNO</strong></span></footer>
+    </main>
+  </div>
+  <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+    {% if is_driver %}
+    <a class="{% if section == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span>⌂</span>{{ t.dashboard }}</a>
+    <a class="mobile-add" href="{% url 'expense_add' %}" aria-label="Add expense">+</a>
+    <a href="{% url 'settings' %}"><span>◎</span>{{ t.profile }}</a>
+    {% else %}
+    <a class="{% if section == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></span>{{ t.dashboard }}</a>
+    <a class="{% if section == 'vehicles' %}active{% endif %}" href="{% url 'vehicles' %}"><span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7 2-4h10l2 4 2 3v8H3v-8Zm-2 4h18M7 14h1m8 0h1M5 18v3m14-3v3"/></svg></span>{{ t.my_cars }}</a>
+    <a class="mobile-add" href="{% url 'expense_add' %}" aria-label="Add expense">+</a>
+    <a class="{% if section == 'reports' %}active{% endif %}" href="{% url 'reports' %}"><span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v18h17M8 16v-5m5 5V6m5 10v-7"/></svg></span>{{ t.reports }}</a>
+    <a class="{% if section == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="20" cy="12" r="1"/></svg></span>{{ t.settings }}</a>
+    {% endif %}
+  </nav>
+</div>
+<div id="sidebar-overlay"></div>
+<script src="{% static 'js/app.js' %}" defer></script>
+<script src="{% static 'js/reference.js' %}" defer></script>
+<script src="{% static 'js/account.js' %}" defer></script>
+<script src="{% static 'js/session.js' %}" defer></script>
+<script src="{% static 'js/push.js' %}" defer></script>
+</body>
+</html>

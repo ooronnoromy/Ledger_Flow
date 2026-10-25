@@ -1,0 +1,17 @@
+.env
+.venv/
+db.sqlite3
+media/
+staticfiles/
+__pycache__/
+*.pyc
+.preview-browser*/
+preview-desktop.png
+preview-mobile.png
+preview-account-*.png
+.backups/
+.secrets/
+preview-driver*.html
+preview-notifications.html
+preview-push-settings.html
+preview-role-*.png

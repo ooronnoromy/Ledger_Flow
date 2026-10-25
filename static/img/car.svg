@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 300" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs><linearGradient id="body" x1="0" y1="0" y2="1"><stop stop-color="#fff"/><stop offset=".56" stop-color="#f7fcfc"/><stop offset="1" stop-color="#acbfc3"/></linearGradient><linearGradient id="win" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#243e4b"/><stop offset="1" stop-color="#8babb6"/></linearGradient><filter id="shadow" x="-20%" y="-40%" width="140%" height="200%"><feGaussianBlur stdDeviation="14"/></filter></defs>
+<ellipse cx="326" cy="258" rx="285" ry="19" fill="#295048" opacity=".25" filter="url(#shadow)"/>
+<path d="M75 167 Q83 157 106 154 L163 145 Q202 90 240 76 Q284 64 416 72 Q468 84 504 148 L564 165 Q590 173 604 192 L613 226 Q614 245 594 247 L64 247 Q41 245 41 224 L47 192Q52 175 75 167Z" fill="url(#body)" stroke="#778b92" stroke-width="5"/>
+<path d="M188 145 Q223 83 258 82 L403 81 Q446 84 478 144Z" fill="url(#win)" stroke="#879da6" stroke-width="6"/>
+<path d="M324 83 L323 145" stroke="#dbe7e8" stroke-width="7"/><path d="M327 144 L330 226" stroke="#b0bfc4" stroke-width="4"/>
+<path d="M171 152 L496 154" stroke="#fff" stroke-width="5"/>
+<path d="M95 177 L166 168" stroke="#dce9ec" stroke-width="8"/><path d="M505 169 L568 179" stroke="#adbbc1" stroke-width="8"/>
+<path d="M52 218 L80 225 L109 226 M568 225 L602 217" fill="none" stroke="#495d68" stroke-width="8"/>
+<path d="M51 194 L85 192 Q103 193 108 211 L58 211" fill="#eef9fc" stroke="#b1c5c9" stroke-width="3"/>
+<path d="M567 193 L591 194 L604 214 L567 209" fill="#ee5262" stroke="#d84d54" stroke-width="3"/>
+<path d="M198 170 L221 170" stroke="#c1cbd0" stroke-width="8" stroke-linecap="round"/><path d="M374 170 L399 170" stroke="#c1cbd0" stroke-width="8" stroke-linecap="round"/>
+<path d="M44 232 Q325 241 611 231" stroke="#657e81" stroke-width="5" fill="none"/>
+<g><circle cx="169" cy="237" r="44" fill="#1e3139"/><circle cx="169" cy="237" r="31" fill="#b0bfc6" stroke="#ecf6f4" stroke-width="5"/><circle cx="169" cy="237" r="17" fill="#eef7f8"/><circle cx="169" cy="237" r="6" fill="#5e7079"/></g>
+<g><circle cx="493" cy="237" r="44" fill="#1e3139"/><circle cx="493" cy="237" r="31" fill="#b0bfc6" stroke="#ecf6f4" stroke-width="5"/><circle cx="493" cy="237" r="17" fill="#eef7f8"/><circle cx="493" cy="237" r="6" fill="#5e7079"/></g>
+</svg>
