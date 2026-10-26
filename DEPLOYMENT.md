@@ -45,10 +45,25 @@ Deployments apply migrations before replacing the running service. Check the
 Railway deployment and runtime logs after changes. `/healthz/` should return
 HTTP 200 with `ok`; login and registration should work over HTTPS.
 
-Maintain backups of both database and app volumes through Railway's volume
-backup settings. Restoring the database without its uploaded files may leave
-missing photos. Changing a volume or database is not part of routine deployment.
+Automatic volume backups require a Railway Pro workspace. This workspace's
+current plan rejected daily backup scheduling, so automated backups are NOT
+enabled. After upgrading, enable daily backups for both `postgres-volume` and
+`ledgerflow-data` in Railway's volume settings. Restoring the database without
+its uploaded files may leave missing photos. Changing a volume or database is
+not part of routine deployment.
 
 Phone notification delivery requires enabling notifications on a real device.
 For retries, run `python manage.py retry_push_notifications` in the service
 shell. A periodic retry job is optional and is not configured by this deployment.
+
+## Verification on 2026-10-26
+
+All 46 Django tests pass, and no model migrations are missing. Railway built
+the image, collected static files, applied all migrations, and passed its
+database health check. Both services are online. Public HTTPS checks passed
+for login, registration, six login-page static assets, the PWA manifest and
+service worker. Secure cookies and HSTS were verified. The production database
+has no user accounts; create the first fleet account at `/register/`.
+
+Web Push keys are present on the persistent volume and load successfully;
+real-phone delivery still needs a user to grant notification permission.
