@@ -28,7 +28,7 @@ class SessionExpiryMiddleware:
 class DriverAccessMiddleware:
     """Enforce driver permissions at every application entry point."""
     allowed = {'dashboard', 'expense_add', 'settings', 'set_language', 'downloads',
-               'password_change', 'password_change_done', 'logout', 'login', 'manifest', 'service_worker', 'session_activity'}
+               'password_change', 'password_change_done', 'logout', 'login', 'manifest', 'service_worker', 'session_activity', 'private_media', 'healthcheck'}
 
     def __init__(self, get_response):
         self.get_response = get_response

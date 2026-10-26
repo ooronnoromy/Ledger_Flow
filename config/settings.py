@@ -14,11 +14,15 @@ if env_file.exists():
         os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'development-only-secret-autoledger-bd-change-me')
-DEBUG = os.getenv('DJANGO_DEBUG', '1') == '1'
+DEBUG = os.getenv('DJANGO_DEBUG', '0' if os.getenv('RAILWAY_ENVIRONMENT_ID') else '1') == '1'
 if not DEBUG and (SECRET_KEY in {'development-only-secret-autoledger-bd-change-me', 'change-this-in-production-use-a-long-random-key'} or len(SECRET_KEY) < 48):
     raise RuntimeError('Set a unique, randomly generated DJANGO_SECRET_KEY (48+ characters) before running with DJANGO_DEBUG=0.')
 ALLOWED_HOSTS = [s.strip() for s in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if s.strip()]
 CSRF_TRUSTED_ORIGINS = [s.strip() for s in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if s.strip()]
+if os.getenv('RAILWAY_PUBLIC_DOMAIN'):
+    railway_domain = os.environ['RAILWAY_PUBLIC_DOMAIN']
+    ALLOWED_HOSTS += [railway_domain, 'healthcheck.railway.app']
+    CSRF_TRUSTED_ORIGINS += [f'https://{railway_domain}']
 
 INSTALLED_APPS = [
     'ledger.admin_config.SuperuserAdminConfig', 'django.contrib.auth', 'django.contrib.contenttypes',
@@ -79,9 +83,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STORAGES = {'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'}}
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+}
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path(os.getenv('DJANGO_MEDIA_ROOT', str(BASE_DIR / 'media')))
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
@@ -90,10 +97,11 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_IDLE_TIMEOUT = 5 * 60
 PUSH_NOTIFY_SUPERUSERS = True
-WEBPUSH_PRIVATE_KEY = os.getenv('WEBPUSH_PRIVATE_KEY', str(BASE_DIR / '.secrets/webpush-private.pem'))
+WEBPUSH_KEYS_DIR = Path(os.getenv('WEBPUSH_KEYS_DIR', str(BASE_DIR / '.secrets')))
+WEBPUSH_PRIVATE_KEY = os.getenv('WEBPUSH_PRIVATE_KEY', str(WEBPUSH_KEYS_DIR / 'webpush-private.pem'))
 WEBPUSH_PUBLIC_KEY = os.getenv('WEBPUSH_PUBLIC_KEY', '')
-if not WEBPUSH_PUBLIC_KEY and (BASE_DIR / '.secrets/webpush-public.txt').exists():
-    WEBPUSH_PUBLIC_KEY = (BASE_DIR / '.secrets/webpush-public.txt').read_text().strip()
+if not WEBPUSH_PUBLIC_KEY and (WEBPUSH_KEYS_DIR / 'webpush-public.txt').exists():
+    WEBPUSH_PUBLIC_KEY = (WEBPUSH_KEYS_DIR / 'webpush-public.txt').read_text().strip()
 WEBPUSH_SUBJECT = os.getenv('WEBPUSH_SUBJECT', 'mailto:admin@example.com')
 CSRF_COOKIE_HTTPONLY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -103,3 +111,5 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_REDIRECT_EXEMPT = [r'^healthz/$']
+    SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS', '3600'))
